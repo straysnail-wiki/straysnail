@@ -1,0 +1,97 @@
+#include <Servo.h>  //Import the library files of steering gear
+Servo head_servo;  //Create a steering gear instance to control a steering gear
+#include <Wire.h> 
+float distance = 0;  //Decimal distance value
+float ds[3];  //Create an array of float numbers to store the values read
+
+#define INA 7  //Define pin 7 to control the direction of left motor
+#define ENA 6  //Define pin 6 to control the speed of left motor
+#define INB 8  //Define pin 8 to control the direction of right motor
+#define ENB 5  //Define pin 5 to control the speed of right motor
+
+void setup() {
+  Serial.begin(9600);
+  Wire.begin();
+  pinMode(INA, OUTPUT);  //Set the pins controlling the motors to output
+  pinMode(ENA, OUTPUT);
+  pinMode(INB, OUTPUT);
+  pinMode(ENB, OUTPUT);
+  head_servo.attach(12,500,2500);  //Set the steering gear pin as A2, and the range is 500-2500ms
+}
+
+void loop() {
+  head_servo.write(90);  //90degrees
+  distance = checkdistance(); //Get the value returned by ultrasonic function
+  if(distance < 8)
+  {
+    car_back();
+  }
+  else if((distance >= 8) && (distance <= 16))
+  {
+    car_stop();
+  }
+  else if((distance > 16) && (distance <= 25))
+  {
+    car_forward();
+  }
+  else
+  {
+    car_stop();
+  }
+}
+
+//Ultrasonic ranging function
+float checkdistance() {
+  char i = 0;
+  ds[0]=0;
+  ds[1]=0;
+  ds[2]=0;
+  Wire.beginTransmission(0x57);   //Initial Address is 0X57
+  Wire.write(1);                  //Writing command 0X01: 0X01 is the command to start measuring
+  Wire.endTransmission();            
+  delay(100);                     //Measure cycle delay: One cycle is 100ms, set 120ms to keep some allowance    
+  Wire.requestFrom(0x57,3);       //The address is 0X57, and read 3 8-bit distance values       
+  while (Wire.available())
+  {
+   ds[i++] = Wire.read();
+  }          
+  distance=(ds[0]*65536+ds[1]*256+ds[2])/10000; //Calculated as cm value     
+  Serial.print("distance : "); 
+  if ((1<=distance)&&(600>=distance))           //Value between 1cm-6m 
+  {
+  Serial.print(distance);
+   Serial.print(" CM ");  
+  }
+  else 
+  {
+  Serial.print(" - - - - ");                   //Invalid value is displayed as- - - -
+  }
+  Serial.println();    
+  delay(10);                                  //Adjust the measure cycle
+  return distance;
+}
+
+//The little snail moves forward
+void car_forward()
+{
+  digitalWrite(INA, HIGH);  //Output high level and control the left motor forward
+  analogWrite(ENA, 100);    //PWM output to control the speed of left motor
+  digitalWrite(INB, HIGH);  //Output high level and control the right motor forward
+  analogWrite(ENB, 100);    //PWM output to control the speed of right motor
+}
+//The little snail moves backward
+void car_back()
+{
+  digitalWrite(INA, LOW);  //Output low level and control the left motor backward
+  analogWrite(ENA, 100);   //PWM output to control the speed of left motor
+  digitalWrite(INB, LOW);  //Output low level and control the right motor backward
+  analogWrite(ENB, 100);   //PWM output to control the speed of right motor
+}
+//Stop
+void car_stop()
+{
+  digitalWrite(INA, HIGH);
+  analogWrite(ENA, 0);
+  digitalWrite(INB, HIGH);
+  analogWrite(ENB, 0);
+}
