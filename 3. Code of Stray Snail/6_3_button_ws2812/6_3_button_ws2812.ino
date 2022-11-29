@@ -26,34 +26,39 @@ void setup() {
 
 void loop() {
   btnVal1 = digitalRead(btnPin);  //Read the button value and assign it to btnVal1
-  while(btnVal1 == 0)  //Judge if the button is pressed
+  if(btnVal1 == 0)  //Judge if the button is pressed
   {
     delay(10);
-    flag1 = 1;
-    while(flag1 == 1) //When the button is pressed
+    btnVal1 = digitalRead(btnPin);
+    if(btnVal1 == 0)
     {
-      btnVal1 = digitalRead(btnPin); //Detect the button state again
-      if(btnVal1 == 1)  //Judge if the button is released
+      flag1 = 1;
+      while(flag1 == 1) //When the button is pressed
       {
-        count = count + 1; //Record the click times of the button
-        Serial.println(count);  //Print the click times of the button
-        flag1 = 0; //Exit the pressed state
-        if(count >= 6)
+        btnVal1 = digitalRead(btnPin); //Detect the button state again
+        if(btnVal1 == 1)  //Judge if the button is released
         {
-          count = 6;
-        }
-        switch(count)
-        {
-          case 0: displayPiexls(NUMPIXELS, 200, 0, 0); pixels.show(); break;
-          case 1: displayPiexls(NUMPIXELS, 0, 200, 0); pixels.show(); break;
-          case 2: displayPiexls(NUMPIXELS, 0, 0, 200); pixels.show(); break;
-          case 3: displayPiexls(NUMPIXELS, 200, 200, 0); pixels.show(); break;
-          case 4: displayPiexls(NUMPIXELS, 0, 200, 200); pixels.show(); break;
-          case 5: displayPiexls(NUMPIXELS, 200, 200, 200); pixels.show(); break;
-          case 6: displayPiexls(NUMPIXELS, 0, 0, 0); pixels.show(); break;
+          count = count + 1; //Record the click times of the button
+          Serial.println(count);  //Print the click times of the button
+          flag1 = 0; //Exit the pressed state
+          if(count >= 6)
+          {
+            count = 6;
+          }
+          switch(count)
+          {
+            case 0: displayPiexls(NUMPIXELS, 200, 0, 0); pixels.show(); break;
+            case 1: displayPiexls(NUMPIXELS, 0, 200, 0); pixels.show(); break;
+            case 2: displayPiexls(NUMPIXELS, 0, 0, 200); pixels.show(); break;
+            case 3: displayPiexls(NUMPIXELS, 200, 200, 0); pixels.show(); break;
+            case 4: displayPiexls(NUMPIXELS, 0, 200, 200); pixels.show(); break;
+            case 5: displayPiexls(NUMPIXELS, 200, 200, 200); pixels.show(); break;
+            case 6: displayPiexls(NUMPIXELS, 0, 0, 0); pixels.show(); break;
+          }
         }
       }
     }
+    
   }
   btnVal2 = digitalRead(btnPin2);  //Read the button value and assign it to btnVal1
   while(btnVal2 == 0)  //Judge if the button is pressed

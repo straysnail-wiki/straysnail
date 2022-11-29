@@ -39,18 +39,23 @@ void loop() {
   btnVal1 = digitalRead(btnPin1);  //Read the button value and assign it to btnVal1
   if(btnVal1 == 0)  //If button 1 is pressed
   {
-    boolean i = 1;
-    while(i == 1)
+    delay(10);
+    if(btnVal1 == 0)
     {
-      btnVal1 = digitalRead(btnPin1);  //Read the button value and assign it to btnVal1
-      if(btnVal1 == 1)
+      boolean i = 1;
+      while(i == 1)
       {
-        count++;
-        Serial.println(count);
-        i = 0;
+        btnVal1 = digitalRead(btnPin1);  //Read the button value and assign it to btnVal1
+        if(btnVal1 == 1)
+        {
+          count++;
+          Serial.println(count);
+          i = 0;
+        }
       }
+      ranging_state = count % 2; //Calculate the remainder. If it is singular, the value is equal to 1, and if it is even, the value is equal to 0
     }
-    ranging_state = count % 2; //Calculate the remainder. If it is singular, the value is equal to 1, and if it is even, the value is equal to 0
+    
   }
   if(ranging_state == 1)
   {

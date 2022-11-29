@@ -40,6 +40,7 @@ void loop() {
   if(btnVal1 == 0)  //If button 1 is pressed
   {
     delay(10); //Delay to eliminate the shake of the button
+    btnVal1 = digitalRead(btnPin1);
     if(btnVal1 == 0)
     {
       boolean i1 = 1;
@@ -71,6 +72,7 @@ void loop() {
   if(btnVal2 == 0)  //If button 2 is pressed
   {
     delay(10);
+    btnVal2 = digitalRead(btnPin2);
     if(btnVal2 == 0)
     {
       boolean i2 = 1;
