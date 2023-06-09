@@ -22,6 +22,7 @@ float ds[3];
 int distance1;
 int distance2;
 int distance3;
+int distance_val;  //The final filtered ultrasonic value
 #define wayPin1 9
 #define wayPin2 10
 boolean L_tval = 0;
@@ -160,8 +161,8 @@ void parseData()
     case 'E': procedure(window_servo, 114);break;
     
     case 'G': car_tracking(); break;
-    case 'H': car_circle(); break;
-    case 'I': car_avoid(); break;
+    case 'H': car_avoid(); break;
+    case 'I': car_circle(); break;
     case 'J': car_follow(); break;
     case 'K': car_find_light(); break;
     case 'M': play_music(buzzerPin); break;
@@ -407,23 +408,23 @@ void car_tracking()
     if((L_tval == 1) && (R_tval == 1))
     {
       digitalWrite(INA, HIGH);
-      analogWrite(ENA, 50);
+      analogWrite(ENA, 56);
       digitalWrite(INB, HIGH);
-      analogWrite(ENB, 50);
+      analogWrite(ENB, 56);
     }
     else if((L_tval == 1) && (R_tval == 0))
     {
       digitalWrite(INA, LOW);
-      analogWrite(ENA, 70);
+      analogWrite(ENA, 90);
       digitalWrite(INB, HIGH);
-      analogWrite(ENB, 80);      
+      analogWrite(ENB, 100);      
     }
     else if((L_tval == 0) && (R_tval == 1))
     {
       digitalWrite(INA, HIGH);
-      analogWrite(ENA, 80);
+      analogWrite(ENA, 100);
       digitalWrite(INB, LOW);
-      analogWrite(ENB, 70);
+      analogWrite(ENB, 90);
     }
     else if((L_tval == 0) && (R_tval == 0))
     {
@@ -591,6 +592,7 @@ float checkdistance() {
   if ((1<=distance)&&(600>=distance))
   {
    Serial.println(distance);
+   distance_val = distance;
    //Serial.print(" CM ");  
   }
   else 
@@ -599,7 +601,7 @@ float checkdistance() {
   }
   //Serial.println();    
   delay(10);
-  return distance;
+  return distance_val;
 }
 
 void procedure(int serPin, int myangle)
